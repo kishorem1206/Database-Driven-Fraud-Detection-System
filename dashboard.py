@@ -53,7 +53,7 @@ try:
         password="password", #change here
         port=3306,
         use_pure=True
-    )
+    ) 
     st.success("✅ Database connected successfully")
 except Exception as e:
     st.error("❌ Database connection failed")
