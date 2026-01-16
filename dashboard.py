@@ -54,7 +54,7 @@ def get_connection():
         host="127.0.0.1",
         database="projects",
         user="root",
-        password="Kishore@6",
+        password="password",
         port=3306,
         use_pure=True
     )
