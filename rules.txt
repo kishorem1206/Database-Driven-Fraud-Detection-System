@@ -1,0 +1,55 @@
+Overview of rules.txt – Fraud Detection SQL Project
+
+The rules.txt file defines the mandatory database structure and trigger rules required for the Fraud Detection Dashboard to function correctly.
+This file acts as a strict contract between the database and the Streamlit dashboard application.
+Any deviation from these rules such as renaming tables or triggers will cause the dashboard to fail.
+
+Database Setup Requirement (Mandatory)
+To successfully run the dashboard:
+1. The database must contain specific tables and triggers.
+2. All table names and trigger names must be exactly the same as listed.
+3. The dashboard logic depends on these exact names.
+If names differ the dashboard will not work.
+
+Required Tables:
+The following tables must exist in the database:
+1. transactions – Stores all transaction records including amount timestamp and account details.
+2. accounts – Stores account level information such as account status active or frozen and balance.
+3. customers – Stores customer details linked to accounts.
+4. fraud_alerts – Stores detected fraud events triggered by suspicious activity.
+5. notification_queue – Stores alerts or messages that need to be sent as notifications such as email or system alerts.
+
+Required Triggers:
+Triggers are used to automatically detect fraud patterns when transactions occur.
+
+Triggers on transactions table:
+1. trg_enforce_daily_limit – Ensures that daily transaction limits are not exceeded.
+2. trg_validate_account_and_amount – Validates account status and transaction amount before processing.
+3. trg_velocity_fraud – Detects high transaction frequency within a short time window.
+4. trg_auto_freeze_account – Automatically freezes an account when fraud thresholds are breached.
+5. trg_notification_vel - Update Notification table whenever velocity attack appears.
+
+Triggers on accounts table:
+1. trg_notify_account_freeze – Sends or queues a notification when an account gets frozen.
+Important Rules
+Do not rename tables.
+Do not rename triggers.
+The dashboard logic relies on exact table and trigger names.
+
+▶️ How to Run the Dashboard:
+Once the database and triggers are set up correctly:
+python -m streamlit run dashboard.py
+
+📥 Project Setup Commands:
+Download the project:
+git clone <github-link>
+
+Sync dependencies:
+uv sync
+
+Activate virtual environment:
+1. Mac / Linux
+source .venv/bin/activate
+
+2. Windows
+source .venv/Scripts/activate
