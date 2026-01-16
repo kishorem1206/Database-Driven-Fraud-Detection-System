@@ -52,7 +52,7 @@ def get_connection():
         host="127.0.0.1",
         database="projects",
         user="root",
-        password="Kishore@6",   # 🔴 change if needed
+        password="password",   # 🔴 update if needed
         port=3306,
         use_pure=True
     )
@@ -108,7 +108,7 @@ accounts_df = load_df("""
 st.dataframe(accounts_df, use_container_width=True)
 
 # -------------------------------------------------
-# VISUAL: Risk Distribution
+# RISK DISTRIBUTION
 # -------------------------------------------------
 st.subheader("📊 Risk Score Distribution")
 
@@ -116,39 +116,18 @@ fig_risk = px.histogram(
     accounts_df,
     x="risk_score",
     color="account_status",
-    nbins=20,
-    title="Risk Score Distribution by Account Status"
+    nbins=20
 )
-
 st.plotly_chart(fig_risk, use_container_width=True)
-
-# -------------------------------------------------
-# VISUAL: Account Status Donut
-# -------------------------------------------------
-st.subheader("🧩 Account Status Breakdown")
-
-status_df = load_df("""
-    SELECT account_status, COUNT(*) AS count
-    FROM accounts
-    GROUP BY account_status
-""")
-
-fig_status = px.pie(
-    status_df,
-    names="account_status",
-    values="count",
-    hole=0.5,
-    title="Account Status Distribution"
-)
-
-st.plotly_chart(fig_status, use_container_width=True)
 
 st.divider()
 
 # -------------------------------------------------
 # TABS
 # -------------------------------------------------
-tab1, tab2 = st.tabs(["🚩 Fraud Alerts", "🔔 Notifications"])
+tab1, tab2, tab3 = st.tabs(
+    ["🚩 Fraud Alerts", "🔔 Notifications", "📑 Transactions"]
+)
 
 # -------------------- FRAUD ALERTS TAB ----------------------
 with tab1:
@@ -185,7 +164,7 @@ with tab1:
             x="created_at",
             y="alert_count",
             markers=True,
-            title="🚨 Fraud Alerts Trend Over Time"
+            title="🚨 Fraud Alerts Trend"
         )
 
         st.plotly_chart(fig_trend, use_container_width=True)
@@ -212,37 +191,45 @@ with tab2:
     else:
         st.dataframe(notif_df, use_container_width=True)
 
-    st.markdown("---")
-    st.subheader("📧 Email Action")
+# -------------------- TRANSACTIONS TAB ----------------------
+with tab3:
+    st.subheader("📑 Transactions")
 
-    if st.button("📧 Send Email for Latest Notification"):
-        if notif_df.empty:
-            st.warning("No notifications available")
-        else:
-            latest = notif_df.iloc[0]
+    txn_df = load_df("""
+        SELECT
+            t.txn_id,
+            c.full_name AS customer_name,
+            t.account_id,
+            t.amount,
+            t.txn_type,
+            t.merchant_country,
+            t.device_id,
+            t.txn_timestamp
+        FROM transactions t
+        JOIN accounts a ON t.account_id = a.account_id
+        JOIN customers c ON a.customer_id = c.customer_id
+        ORDER BY t.txn_timestamp DESC
+        LIMIT 500
+    """)
 
-            email_body = f"""
-            <h3>🚨 Bank Fraud Notification</h3>
-            <p><b>Customer:</b> {latest.customer_name}</p>
-            <p><b>Account ID:</b> {latest.account_id}</p>
-            <p><b>Event:</b> {latest.event_type}</p>
-            <p><b>Message:</b> {latest.message}</p>
-            <p><b>Time:</b> {latest.created_at}</p>
 
-            <a href="http://localhost:8501"
-               style="display:inline-block;padding:10px 16px;
-                      background:#ff4b4b;color:white;
-                      text-decoration:none;border-radius:6px;">
-               🔍 Open Fraud Dashboard
-            </a>
-            """
+    if txn_df.empty:
+        st.info("No transactions available.")
+    else:
+        st.dataframe(txn_df, use_container_width=True)
 
-            send_email(
-                subject=f"[BANK ALERT] {latest.event_type}",
-                body=email_body
-            )
+        st.subheader("📈 Transaction Amount Trend")
 
-            st.success("✅ Email sent successfully")
+        txn_df["txn_timestamp"] = pd.to_datetime(txn_df["txn_timestamp"])
+
+        fig_txn = px.line(
+            txn_df,
+            x="txn_timestamp",
+            y="amount",
+            title="Transaction Amount Over Time"
+        )
+
+        st.plotly_chart(fig_txn, use_container_width=True)
 
 st.divider()
 
