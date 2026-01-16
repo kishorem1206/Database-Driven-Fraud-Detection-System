@@ -5,7 +5,6 @@ import smtplib
 import os
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
-import plotly.express as px
 
 # -------------------------------------------------
 # Load env variables
@@ -46,19 +45,15 @@ st.caption("MySQL Trigger–Driven Fraud Detection System")
 # -------------------------------------------------
 # Database connection
 # -------------------------------------------------
-@st.cache_resource
-def get_connection():
-    return mysql.connector.connect(
+try:
+    conn = mysql.connector.connect(
         host="127.0.0.1",
         database="projects",
         user="root",
-        password="password",   # 🔴 update if needed
+        password="password", #change here
         port=3306,
         use_pure=True
     )
-
-try:
-    conn = get_connection()
     st.success("✅ Database connected successfully")
 except Exception as e:
     st.error("❌ Database connection failed")
@@ -71,8 +66,6 @@ def load_df(query):
 # -------------------------------------------------
 # KPI SECTION
 # -------------------------------------------------
-st.subheader("📌 Key Risk Metrics")
-
 kpi_df = load_df("""
     SELECT
         COUNT(*) AS total_accounts,
@@ -81,10 +74,10 @@ kpi_df = load_df("""
     FROM accounts
 """)
 
-k1, k2, k3 = st.columns(3)
-k1.metric("🏦 Total Accounts", int(kpi_df.total_accounts[0]))
-k2.metric("🚫 Frozen Accounts", int(kpi_df.frozen_accounts[0]))
-k3.metric("⚠️ High Risk Accounts (≥60)", int(kpi_df.high_risk_accounts[0]))
+c1, c2, c3 = st.columns(3)
+c1.metric("Total Accounts", int(kpi_df.total_accounts[0]))
+c2.metric("Frozen Accounts", int(kpi_df.frozen_accounts[0]))
+c3.metric("High Risk Accounts (≥60)", int(kpi_df.high_risk_accounts[0]))
 
 st.divider()
 
@@ -105,31 +98,45 @@ accounts_df = load_df("""
     ORDER BY a.risk_score DESC
 """)
 
-st.dataframe(accounts_df, use_container_width=True)
+st.dataframe(accounts_df, use_container_width=True, hide_index=True)
+
+st.divider()
 
 # -------------------------------------------------
-# RISK DISTRIBUTION
+# TRANSACTIONS OVERVIEW (NEW)
 # -------------------------------------------------
-st.subheader("📊 Risk Score Distribution")
+st.subheader("📑 Transactions Overview")
 
-fig_risk = px.histogram(
-    accounts_df,
-    x="risk_score",
-    color="account_status",
-    nbins=20
-)
-st.plotly_chart(fig_risk, use_container_width=True)
+txn_df = load_df("""
+    SELECT
+        t.txn_id,
+        c.full_name AS customer_name,
+        t.account_id,
+        t.amount,
+        t.txn_type,
+        t.merchant_country,
+        t.device_id,
+        t.txn_timestamp
+    FROM transactions t
+    JOIN accounts a ON t.account_id = a.account_id
+    JOIN customers c ON a.customer_id = c.customer_id
+    ORDER BY t.txn_timestamp DESC
+    LIMIT 500
+""")
+
+if txn_df.empty:
+    st.info("No transactions available.")
+else:
+    st.dataframe(txn_df, use_container_width=True, hide_index=True)
 
 st.divider()
 
 # -------------------------------------------------
 # TABS
 # -------------------------------------------------
-tab1, tab2, tab3 = st.tabs(
-    ["🚩 Fraud Alerts", "🔔 Notifications", "📑 Transactions"]
-)
+tab1, tab2 = st.tabs(["🚩 Fraud Alerts", "🔔 Notifications"])
 
-# -------------------- FRAUD ALERTS TAB ----------------------
+# -------------------- FRAUD ALERTS ----------------------
 with tab1:
     st.subheader("🚩 Fraud Alerts")
 
@@ -149,27 +156,9 @@ with tab1:
     if alerts_df.empty:
         st.info("No fraud alerts yet.")
     else:
-        st.dataframe(alerts_df, use_container_width=True)
+        st.dataframe(alerts_df, use_container_width=True, hide_index=True)
 
-        alerts_df["created_at"] = pd.to_datetime(alerts_df["created_at"])
-        trend_df = (
-            alerts_df
-            .groupby(alerts_df["created_at"].dt.date)
-            .size()
-            .reset_index(name="alert_count")
-        )
-
-        fig_trend = px.line(
-            trend_df,
-            x="created_at",
-            y="alert_count",
-            markers=True,
-            title="🚨 Fraud Alerts Trend"
-        )
-
-        st.plotly_chart(fig_trend, use_container_width=True)
-
-# -------------------- NOTIFICATIONS TAB ----------------------
+# -------------------- NOTIFICATIONS ----------------------
 with tab2:
     st.subheader("🔔 Notifications")
 
@@ -189,47 +178,32 @@ with tab2:
     if notif_df.empty:
         st.info("No notifications yet.")
     else:
-        st.dataframe(notif_df, use_container_width=True)
+        st.dataframe(notif_df, use_container_width=True, hide_index=True)
 
-# -------------------- TRANSACTIONS TAB ----------------------
-with tab3:
-    st.subheader("📑 Transactions")
+    st.markdown("---")
+    st.subheader("📧 Email Action")
 
-    txn_df = load_df("""
-        SELECT
-            t.txn_id,
-            c.full_name AS customer_name,
-            t.account_id,
-            t.amount,
-            t.txn_type,
-            t.merchant_country,
-            t.device_id,
-            t.txn_timestamp
-        FROM transactions t
-        JOIN accounts a ON t.account_id = a.account_id
-        JOIN customers c ON a.customer_id = c.customer_id
-        ORDER BY t.txn_timestamp DESC
-        LIMIT 500
-    """)
+    if st.button("📧 Send Email for Latest Notification"):
+        if notif_df.empty:
+            st.warning("No notifications available")
+        else:
+            latest = notif_df.iloc[0]
 
+            email_body = f"""
+            <h3>🚨 Bank Fraud Notification</h3>
+            <p><b>Customer:</b> {latest.customer_name}</p>
+            <p><b>Account ID:</b> {latest.account_id}</p>
+            <p><b>Event:</b> {latest.event_type}</p>
+            <p><b>Message:</b> {latest.message}</p>
+            <p><b>Time:</b> {latest.created_at}</p>
+            """
 
-    if txn_df.empty:
-        st.info("No transactions available.")
-    else:
-        st.dataframe(txn_df, use_container_width=True)
+            send_email(
+                subject=f"[BANK ALERT] {latest.event_type}",
+                body=email_body
+            )
 
-        st.subheader("📈 Transaction Amount Trend")
-
-        txn_df["txn_timestamp"] = pd.to_datetime(txn_df["txn_timestamp"])
-
-        fig_txn = px.line(
-            txn_df,
-            x="txn_timestamp",
-            y="amount",
-            title="Transaction Amount Over Time"
-        )
-
-        st.plotly_chart(fig_txn, use_container_width=True)
+            st.success("✅ Email sent successfully")
 
 st.divider()
 
@@ -259,8 +233,15 @@ with st.form("txn_form"):
         try:
             cur = conn.cursor()
             cur.execute("""
-                INSERT INTO transactions
-                VALUES (
+                INSERT INTO transactions (
+                    txn_id,
+                    account_id,
+                    amount,
+                    txn_type,
+                    merchant_country,
+                    device_id,
+                    txn_timestamp
+                ) VALUES (
                     UUID(),
                     %s,
                     %s,
