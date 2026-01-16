@@ -1,0 +1,3 @@
+pip install mysql-connector-python streamlit pandas python-dotenv
+
+# run this in Visual Studio code terminal
