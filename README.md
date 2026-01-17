@@ -43,7 +43,7 @@ flowchart TD
     B --> E[Fraud Alerts Table]
     B --> F[Notification Queue]
     D --> G[Risk Score Update]
-    D --> H[Auto Freeze Account]
+    G --> H[Auto Freeze Account]
 
     %% -------------------------
     %% Python Layer (Independent)
