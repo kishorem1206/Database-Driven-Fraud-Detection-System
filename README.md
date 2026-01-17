@@ -116,3 +116,35 @@ Event emission table for downstream systems.
 | message           | TEXT                     | Notification message           |
 | created_at        | TIMESTAMP                | Emission time                  |
 | processed         | BOOLEAN                  | Processing status              |
+
+## 🚨 Fraud Rules – Current Implementation
+
+These rules are fully implemented using **MySQL SQL triggers**.
+
+### ✅ Rule 1: Transaction Amount Validation
+- Rejects zero or negative transactions  
+- Enforced using `BEFORE INSERT` trigger  
+- Prevents malformed financial data from entering the system  
+
+### ✅ Rule 2: Account Status Validation
+- Blocks transactions on **FROZEN** accounts  
+- Prevents bypass via direct database writes  
+
+### ✅ Rule 3: Daily Transaction Limit Enforcement
+- Computes total transaction amount per account per day  
+- Rejects transactions when the daily limit is exceeded  
+
+### ✅ Rule 4: Velocity Fraud Detection
+- Counts transactions within a short time window  
+- Emits a fraud alert without blocking the transaction  
+- Increases the account risk score  
+
+### ✅ Rule 5: Risk-Based Account Auto-Freeze
+- Automatically freezes accounts when risk score ≥ threshold  
+- Fully enforced at the database layer  
+
+### ✅ Rule 6: Notification Emission
+- Emits notification events for:
+  - Velocity fraud detection  
+  - Account auto-freeze  
+- Downstream systems consume these events asynchronously
