@@ -7,9 +7,9 @@ import time
 
 conn = mysql.connector.connect(
     host="127.0.0.1",
-    database="projects",
+    database="database name", #Change here
     user="root",
-    password="password"
+    password="password" #Change here
 )
 
 conn.autocommit = True

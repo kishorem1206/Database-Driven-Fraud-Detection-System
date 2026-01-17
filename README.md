@@ -40,4 +40,4 @@ flowchart TD
     
     H --> I[Streamlit Monitoring Dashboard]
     I --> J[Manual Email Notification - SMTP]
-```
+
