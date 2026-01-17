@@ -35,16 +35,16 @@ Build a data driven fraud detection system that operates independently of applic
 ```mermaid
 flowchart TD
     A[Transaction Insert] --> B[MySQL Triggers]
-    
+
     B --> C[Validation Rules]
     B --> D[Velocity Fraud Detection]
-    D --> E[Risk Score Update]
-    E --> F[Auto Freeze Account]
-    
-    B --> G[Fraud Alerts Table]
-    B --> H[Notification Queue]
-    
-    %% Python-based components
+    B --> E[Fraud Alerts Table]
+    B --> F[Notification Queue]
+
+    D --> G[Risk Score Update]
+    G --> H[Auto Freeze Account]
+
+    %% Python-based components (separate)
     F --> I[Streamlit Monitoring Dashboard]
     F --> J[Manual Email Notification - SMTP]
 ```
