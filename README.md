@@ -18,7 +18,7 @@ To complement database-driven enforcement, the system integrates Python-based se
 
 * Fraud controls need centralized, reliable enforcement
 
-#### Objective: 
+### Objective: 
 Build a data driven fraud detection system that operates independently of application logic and guarantees enforcement directly at the database level
 ## Project workflow
 
@@ -40,6 +40,7 @@ flowchart TD
     
     H --> I[Streamlit Monitoring Dashboard]
     I --> J[Manual Email Notification - SMTP]
+```
 
 ## Database Schema (MySQL)
 
