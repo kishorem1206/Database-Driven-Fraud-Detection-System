@@ -49,8 +49,8 @@ flowchart TD
     %% Python Layer (Independent)
     %% -------------------------
     subgraph Python_Consumers["Python Dashboard"]
-        I[Streamlit Monitoring Dashboard]
-        J[Manual Email Notification - SMTP]
+        I[Monitoring Dashboard]
+        J[Email Notification]
     end
 
 ```
