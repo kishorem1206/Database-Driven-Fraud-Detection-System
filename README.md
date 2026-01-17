@@ -9,7 +9,7 @@ To complement database-driven enforcement, the system integrates Python-based se
 
 ## Demo Video
 
-[![Watch Demo](Demo_thumbnail.png)](https://drive.google.com/file/d/19hpqImzwLK7J9SJ_d3zo1wxy0mO_ALP-/view?usp=sharing)
+[![Watch Demo](https://github.com/user-attachments/assets/a68bc6a0-fe91-4209-b47d-56176248b4a0)](https://drive.google.com/file/d/19hpqImzwLK7J9SJ_d3zo1wxy0mO_ALP-/view?usp=sharing)
 
 ---
 
