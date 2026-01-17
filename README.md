@@ -44,8 +44,9 @@ flowchart TD
     B --> G[Fraud Alerts Table]
     B --> H[Notification Queue]
     
-    H --> I[Streamlit Monitoring Dashboard]
-    I --> J[Manual Email Notification - SMTP]
+    %% Python-based components
+    F --> I[Streamlit Monitoring Dashboard]
+    F --> J[Manual Email Notification - SMTP]
 ```
 ---
 
