@@ -1,9 +1,9 @@
 -- =====================================================
--- BANK FRAUD : CLEAN SETUP SCRIPT (MySQL)
+-- BANK FRAUD(MySQL):
 -- =====================================================
 	
 -- -----------------------------
--- CLEAN START
+-- DELETE EXISTING TABLES IF ANY
 -- -----------------------------
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS accounts;
