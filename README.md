@@ -5,6 +5,7 @@ This project implements a production-inspired, real-time banking fraud detection
 
 To complement database-driven enforcement, the system integrates Python-based services and a Streamlit monitoring dashboard to provide real-time visibility into fraud events. Suspicious activities are surfaced through dashboards and SMTP-based email alerts, enabling controlled, analyst-driven responses without compromising transaction performance.
 
+---
 
 ## Problem statement
 
@@ -20,9 +21,14 @@ To complement database-driven enforcement, the system integrates Python-based se
 
 ### Objective: 
 Build a data driven fraud detection system that operates independently of application logic and guarantees enforcement directly at the database level
+
+---
+
 ## Project workflow
 
 ![1](https://github.com/user-attachments/assets/2c859d05-3607-4085-80a7-439f7a747d19)
+
+---
 
 ## System Architecture
 
@@ -41,6 +47,7 @@ flowchart TD
     H --> I[Streamlit Monitoring Dashboard]
     I --> J[Manual Email Notification - SMTP]
 ```
+---
 
 ## Database Schema (MySQL)
 
@@ -116,6 +123,8 @@ Event emission table for downstream systems.
 | message           | TEXT                     | Notification message           |
 | created_at        | TIMESTAMP                | Emission time                  |
 | processed         | BOOLEAN                  | Processing status              |
+
+---
 
 ## 🚨 Fraud Rules – Current Implementation
 
