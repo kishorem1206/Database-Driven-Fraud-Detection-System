@@ -41,16 +41,16 @@ flowchart TD
     B --> C[Validation Rules]
     B --> D[Velocity Fraud Detection]
     B --> E[Fraud Alerts Table]
-
-    D --> F[Risk Score Update]
-    F --> G[Auto Freeze Account]
+    B --> F[Notification Queue]
+    D --> G[Risk Score Update]
+    F --> H[Auto Freeze Account]
 
     %% -------------------------
     %% Python Layer (Independent)
     %% -------------------------
-    subgraph Python_Consumers["Python Monitoring & Alerting Layer"]
-        H[Streamlit Monitoring Dashboard]
-        I[Manual Email Notification - SMTP]
+    subgraph Python_Consumers["Python Dashboard"]
+        I[Streamlit Monitoring Dashboard]
+        J[Manual Email Notification - SMTP]
     end
 
 ```
