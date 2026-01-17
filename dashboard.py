@@ -48,7 +48,7 @@ st.caption("MySQL – Database Driven Fraud Detection System")
 try:
     conn = mysql.connector.connect(
         host="127.0.0.1",
-        database="database name",
+        database="database name", #change here
         user="root",
         password="password", #change here
         port=3306,
