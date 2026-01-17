@@ -7,6 +7,12 @@ To complement database-driven enforcement, the system integrates Python-based se
 
 ---
 
+## Demo Video
+
+[![Watch Demo](assets/Demo_thumbnail.png)](https://drive.google.com/file/d/19hpqImzwLK7J9SJ_d3zo1wxy0mO_ALP-/view?usp=sharing)
+
+---
+
 ## Problem statement
 
 * Banking systems handle large volumes of transactions in real time
