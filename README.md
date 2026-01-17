@@ -157,3 +157,14 @@ These rules are fully implemented using **MySQL SQL triggers**.
   - Velocity fraud detection  
   - Account auto-freeze  
 - Downstream systems consume these events asynchronously
+
+---
+
+## ▶️ How to Run
+
+- Start the **MySQL server**
+- Create the required **tables and SQL triggers**
+- Load sample customer, account, and transaction data
+- Configure the `.env` file with database and SMTP credentials
+- Run the **Streamlit monitoring dashboard**
+- Simulate transactions and observe fraud detection, alerts, and account actions
