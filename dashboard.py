@@ -40,7 +40,7 @@ st.set_page_config(
 )
 
 st.title("🚨 Bank Fraud Monitoring Dashboard")
-st.caption("MySQL Trigger–Driven Fraud Detection System")
+st.caption("MySQL – Database Driven Fraud Detection System")
 
 # -------------------------------------------------
 # Database connection
@@ -48,7 +48,7 @@ st.caption("MySQL Trigger–Driven Fraud Detection System")
 try:
     conn = mysql.connector.connect(
         host="127.0.0.1",
-        database="projects",
+        database="database name",
         user="root",
         password="password", #change here
         port=3306,
