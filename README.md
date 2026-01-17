@@ -34,19 +34,25 @@ Build a data driven fraud detection system that operates independently of applic
 
 ```mermaid
 flowchart TD
+
+    %% Core Database Layer
     A[Transaction Insert] --> B[MySQL Triggers]
 
     B --> C[Validation Rules]
     B --> D[Velocity Fraud Detection]
     B --> E[Fraud Alerts Table]
-    B --> F[Notification Queue]
 
-    D --> G[Risk Score Update]
-    G --> H[Auto Freeze Account]
+    D --> F[Risk Score Update]
+    F --> G[Auto Freeze Account]
 
-    %% Python-based components (separate)
-    F --> I[Streamlit Monitoring Dashboard]
-    F --> J[Manual Email Notification - SMTP]
+    %% -------------------------
+    %% Python Layer (Independent)
+    %% -------------------------
+    subgraph Python_Consumers["Python Monitoring & Alerting Layer"]
+        H[Streamlit Monitoring Dashboard]
+        I[Manual Email Notification - SMTP]
+    end
+
 ```
 ---
 
